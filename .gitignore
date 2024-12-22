@@ -36,6 +36,7 @@ coverage/
 *.bak
 *.orig
 *.lock
+temp.ts
 
 # Miscellaneous
 *.log
