@@ -12,3 +12,17 @@ export const signinSchema = z.object({
   email: z.string().email("Invalid email format"),
   password: z.string(),
 });
+
+
+// BlogSchma - Post
+export const blogSchema = z.object({
+  title:z.string(),
+  content:z.string()
+})
+
+// BlogSchema - Put
+export const blogSchemaPut = z.object({
+  blogId:z.string(),
+  title:z.string().optional(),
+  content:z.string().optional()
+})

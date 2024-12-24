@@ -5,21 +5,21 @@ export const authMiddleware = async (c:Context, next: ()=>Promise<void>) => {
     try{
         const header = c.req.header("Authorization");
 
-        if(!header || !header.startsWith("bearer")){
+        if(!header || !header.startsWith("Bearer")){
             return c.json({
-                error:"unauthorized!"
+                error:"unauthorized token!"
             },401);
         };
 
         const token = header.split(' ')[1];
+        
+        const user = await verify(token, c.env.JWT_SECRET);
 
-        const jwtResponse = await verify(token, c.env.JWT_SECRET);
-
-        if(!jwtResponse){
+        if(!user){
             return c.json({error:"unauthorized"},401);
         }
 
-        c.set('UserId', jwtResponse.id);
+        c.set('UserId', user.id);
         await next();
     }catch (error: any) {
         console.error('Error occurred in authMiddlware:', error);

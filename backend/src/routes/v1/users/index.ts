@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { PrismaClient} from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
-import { decode, verify, sign } from 'hono/jwt';
+import { sign } from 'hono/jwt';
 import { typeEnv } from "..//..//..//types//hono"
 
 import bcrypt from 'bcryptjs';
@@ -9,11 +9,11 @@ import { signupSchema, signinSchema } from '../../../utils/validation';
 
 const userRoutes = new Hono<{ Bindings: typeEnv }>();  
 
-// SIGN UP
+// SIGN UP        
 userRoutes.post('/signup', async (c) => {
 
   try{
-    
+
     const prisma = new PrismaClient({
       datasourceUrl : c.env.DATABASE_URL_CPOOL
     }).$extends(withAccelerate());
@@ -35,7 +35,7 @@ userRoutes.post('/signup', async (c) => {
           email: email,
           password: hashedPassword,
           name: name || null,
-        },
+        },  
       });
 
       const token = await sign({id:user.id}, c.env.JWT_SECRET);
