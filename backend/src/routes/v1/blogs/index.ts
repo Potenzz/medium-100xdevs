@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
 import { Hono } from 'hono';
-import { blogSchema, blogSchemaPut} from '../../../utils/validation';
+import { blogSchemaCreate, blogSchemaUpdate} from '@potenz/medium-common';
 import { authMiddleware } from '../../../middlewares/authMiddleware';
 
 
@@ -27,7 +27,7 @@ blogRoutes.post('/blog', async (c)=>{
 
     const body = await c.req.json();
 
-    const validatedData = blogSchema.safeParse(body);
+    const validatedData = blogSchemaCreate.safeParse(body);
     if(!validatedData.success){
       return c.json({error: validatedData.error.format}, 400);
     };
@@ -70,7 +70,7 @@ blogRoutes.put('/blog',async (c)=>{
 
     const body = await c.req.json();
 
-    const validatedData = blogSchemaPut.safeParse(body);
+    const validatedData = blogSchemaUpdate.safeParse(body);
     if(!validatedData.success){
       return c.json({error: validatedData.error.format}, 400);
     };

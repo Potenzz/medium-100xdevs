@@ -5,7 +5,7 @@ import { sign } from 'hono/jwt';
 import { typeEnv } from "..//..//..//types//hono"
 
 import bcrypt from 'bcryptjs';
-import { signupSchema, signinSchema } from '../../../utils/validation';
+import { signupSchema, signinSchema } from '@potenz/medium-common';
 
 const userRoutes = new Hono<{ Bindings: typeEnv }>();  
 
