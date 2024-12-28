@@ -1,0 +1,9 @@
+name = "backend-medium-100xdevs"
+main = "src/index.ts"
+compatibility_date = "2024-12-20"
+
+# compatibility_flags = [ "nodejs_compat" ]
+
+[vars]
+DATABASE_URL_CPOOL = "prisma://accelerate.prisma-data.net/?api_key=??"
+JWT_SECRET = ""
