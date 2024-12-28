@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChangeEvent, useState } from "react"; 
 import { SignupSchema } from "@potenz/medium-common";
+import axios from "axios";
+import { BACKEND_URL } from "../config/config";
 
 
 const Auth = ({type}:{type:"signup" | "signin"}) => {
@@ -9,6 +11,46 @@ const Auth = ({type}:{type:"signup" | "signin"}) => {
         password:"",
         name:"",
     })
+    const navigate = useNavigate()
+    const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({});
+    const [serverError, setServerError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false); 
+
+
+
+    const sendRequest = async () =>{
+        setIsLoading(true); 
+        try{
+            const endpoint = `${BACKEND_URL}/api/v1/users/${type === "signup" ? "signup" : "signin"}`;
+            const res = await axios.post(endpoint, postInputs, {
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            }
+            );
+            const jwt = res?.data?.jwt;
+            if (!jwt) {
+                throw new Error("JWT token missing in response");
+            }
+            localStorage.setItem("token", jwt);
+            navigate("/blogs")
+        }catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+              const responseErrors = error.response?.data?.error;
+              if (responseErrors && typeof responseErrors === "object") {
+                // Handle Zod validation errors
+                setValidationErrors(responseErrors);
+              } else {
+                // Handle other server errors
+                setServerError(error.response?.data?.error || "Error while signing up/signing in!");
+              }
+            } else {
+              setServerError("An unexpected error occurred. Please try again.");
+            }
+        } finally {
+            setIsLoading(false); 
+        }
+    };   
 
     return (
         <div className="flex justify-center h-screen items-center ">
@@ -23,6 +65,7 @@ const Auth = ({type}:{type:"signup" | "signin"}) => {
                         {type=="signup"? "Login":"Sign up"}
                     </Link>
                 </div>
+
 
                 <div className="flex flex-col gap-4 mt-4 "> 
 
@@ -49,6 +92,9 @@ const Auth = ({type}:{type:"signup" | "signin"}) => {
                         }))
                     }}
                     />
+                    {validationErrors?.email?.map((error, index) => (
+                        <p key={index} className="text-red-500 text-sm">{error}</p>
+                    ))}
 
                     <LabelledInput
                     label="Password"
@@ -62,13 +108,27 @@ const Auth = ({type}:{type:"signup" | "signin"}) => {
                         }));
                     }}
                     />
+                    {validationErrors?.password?.map((error, index) => (
+                        <p key={index} className="text-red-500 text-sm">{error}</p>
+                    ))}
 
                     <button 
                     type="button" 
-                    className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                    {type=="signup"?"Sign up":"Sign in"}
-                    //onclick
+                    className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                    onClick={sendRequest}
+                    disabled={isLoading} // Disable button while loading
+                    >
+                    {isLoading ? (
+                            <div className="flex items-center justify-center gap-2">
+                                <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin"></div>
+                                Processing...
+                            </div>
+                        ) : (
+                            type === "signup" ? "Sign up" : "Sign in"
+                        )}
                     </button>
+                    {serverError && <p className="text-red-500">{serverError}</p>}
+
 
 
                 </div>
