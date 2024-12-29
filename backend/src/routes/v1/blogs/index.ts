@@ -39,7 +39,8 @@ blogRoutes.post('/blog', async (c)=>{
         data:{
           title:title,
           content:content, 
-          authorId:authorId
+          authorId:authorId,
+          publishedAt: new Date(), 
         },
       });
 
@@ -115,7 +116,7 @@ blogRoutes.put('/blog',async (c)=>{
 });
 
 // Get all blogs with pagination
-blogRoutes.get('/blog/bulk', async (c) => {
+blogRoutes.get('/bulk', async (c) => {
   try {
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL_CPOOL,
@@ -136,6 +137,18 @@ blogRoutes.get('/blog/bulk', async (c) => {
     try {
       // Fetch paginated blogs from the database
       const blogs = await prisma.post.findMany({
+        select:{
+          id:true, 
+          publishedAt:true,
+          author:{
+            select:{
+              id:true,
+              name:true
+            }
+          },
+          title:true,
+          content:true,
+        },
         skip,
         take: limit,
       });
@@ -166,8 +179,8 @@ blogRoutes.get('/blog/bulk', async (c) => {
 
 
 
-// Get blogs
-blogRoutes.get('/blog/:id', async (c)=>{
+// Get blog
+blogRoutes.get('/:id', async (c)=>{
   try{
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL_CPOOL
