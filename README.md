@@ -28,5 +28,5 @@ A application where users can post blogs.
 - POST /api/v1/users/signin
 - POST /api/v1/blogs
 - PUT /api/v1/blogs
-- GET /api/v1/blogs:id
+- GET /api/v1/blogs/:id
 - GET /api/v1/blogs/bulk
