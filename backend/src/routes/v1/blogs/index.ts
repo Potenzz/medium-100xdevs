@@ -17,7 +17,7 @@ const blogRoutes = new Hono<{
 blogRoutes.use(authMiddleware);
 
 // Create blog
-blogRoutes.post('/blog', async (c)=>{
+blogRoutes.post('/', async (c)=>{
   try{
     const authorId = c.get("UserId");
 
@@ -61,7 +61,7 @@ blogRoutes.post('/blog', async (c)=>{
 });
 
 // Update blog
-blogRoutes.put('/blog',async (c)=>{
+blogRoutes.put('/',async (c)=>{
   try{
     const authorId = c.get("UserId");
 
