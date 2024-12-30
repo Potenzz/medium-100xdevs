@@ -194,7 +194,20 @@ blogRoutes.get('/:id', async (c)=>{
     try{
 
       const blog = await prisma.post.findFirst({
-        where:{id: blogId}
+        where:{id: blogId},
+        select:{
+          id:true, 
+          publishedAt:true,
+          published:true,
+          author:{
+            select:{
+              id:true,
+              name:true
+            }
+          },
+          title:true,
+          content:true,
+        },
       })
 
       // If no blog is found, return a 404 error
@@ -210,6 +223,40 @@ blogRoutes.get('/:id', async (c)=>{
     }
   } catch (error: any) {
     console.error("Unexpected error during signup:", error);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+});
+
+// Delete blog
+blogRoutes.delete('/:id', async (c) => {
+  try {
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL_CPOOL,
+    }).$extends(withAccelerate());
+
+    const blogId = c.req.param('id');
+    if (!blogId) {
+      return c.json({ error: "Blog ID is required" }, 400);
+    }
+
+    try {
+      // Delete the blog by its ID
+      const deletedBlog = await prisma.post.delete({
+        where: { id: blogId },
+      });
+
+      // If no blog is found, return a 404 error
+      if (!deletedBlog) {
+        return c.json({ error: "Blog not found" }, 404);
+      }
+
+      return c.json({ message: "Blog deleted successfully" }, 200);
+    } catch (prismaError: any) {
+      console.error("Prisma error during deleting blog:", prismaError);
+      return c.json({ error: "Error deleting blog" }, 500);
+    }
+  } catch (error: any) {
+    console.error("Unexpected error during delete operation:", error);
     return c.json({ error: "Internal server error" }, 500);
   }
 });
