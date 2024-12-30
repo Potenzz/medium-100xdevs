@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 
+
 interface BlogCardProps {
     id: string;
     authorName: string;
@@ -66,4 +67,5 @@ function Circle() {
 }
 
 
-export { BlogCard, Avatar }
+export { BlogCard, Avatar, Circle}
+export type {BlogCardProps}

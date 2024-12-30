@@ -1,6 +1,6 @@
 import Appbar from "../components/AppBar"
-import { BlogCard } from "../components/BlogCard"
-import { Skeleton } from "../components/Skeleton";
+import { BlogCard } from "../components/BlogCard";
+import { Skeleton_landingPage } from "../components/Skeleton";
 import { useBlogs } from "../hooks";
 
 export const Blogs = () => {
@@ -9,38 +9,38 @@ export const Blogs = () => {
     if(loading){
         return <div>
             <Appbar/>
-            <Skeleton/>
+            <Skeleton_landingPage/>
         </div>
     }
 
-     if (error) {
+    if (error) {
         return (
             <div>
                 <Appbar />
-                <div className="text-center text-red-500 font-semibold mt-4">
-                    {error}
+                <div className="flex justify-center items-center flex-col h-screen w-screen text-red-500 font-semibold">
+                    {error }
                 </div>
             </div>
         );
     }
 
-    return <div>
-        <Appbar />
+        return <div>
+            <Appbar />
 
-        <div className="flex justify-center" >
-            <div >
-            {blogs.map((blog)=>{
-                return (
-                    <BlogCard
-                        id={blog.id}
-                        authorName = {blog.author.name || "Unknown Author"}
-                        publishedAt={blog.publishedAt}
-                        title={blog.title}
-                        content={blog.content}
-                    />
-                )
-            })}
+            <div className="flex justify-center" >
+                <div >
+                {blogs.map((blog)=>{
+                    return (
+                        <BlogCard
+                            id={blog.id}
+                            authorName = {blog.author.name || "Unknown Author"}
+                            publishedAt={blog.publishedAt}
+                            title={blog.title}
+                            content={blog.content}
+                        />
+                    )
+                })}
+                </div>
             </div>
         </div>
-    </div>
 }
