@@ -14,6 +14,10 @@ A application where users can post blogs.
 - 8. jwt for the authentication (cookies approach as well)
 - 9. HONO library for cloudflare workers.
 
+## Demo Video
+
+[![Watch the video](https://img.youtube.com/vi/SRNApmL0QQs/0.jpg)](https://youtu.be/SRNApmL0QQs)
+
 
 ## Features of the projects:
 
